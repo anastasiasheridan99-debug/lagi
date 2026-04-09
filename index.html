@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lagi — Circular Fashion</title>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#f0ebe3;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:20px;font-family:'DM Sans',sans-serif}
+#root{width:100%;max-width:390px;margin:0 auto}
+.phone{background:#fff;border-radius:40px;overflow:hidden;box-shadow:0 32px 64px rgba(0,0,0,0.18);position:relative;min-height:844px;display:flex;flex-direction:column}
+.status-bar{background:transparent;padding:14px 24px 0;display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:500;color:#2d2419;flex-shrink:0}
+.screen{flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column}
+.screen::-webkit-scrollbar{display:none}
+.nav-bar{display:flex;background:#fff;border-top:1px solid #f0ebe3;padding:8px 0 20px;flex-shrink:0}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:all .2s;padding:4px 0}
+.nav-icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+.nav-label{font-size:10px;font-weight:500;letter-spacing:.3px}
+.nav-active{color:#c17b4e}
+.nav-inactive{color:#b8a898}
+.onboard-hero{background:linear-gradient(160deg,#2d2419 0%,#4a3728 60%,#c17b4e 100%);min-height:360px;padding:48px 32px 40px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden}
+.onboard-pattern{position:absolute;top:0;right:0;width:200px;height:200px;opacity:.08}
+.brand-name{font-family:'Cormorant Garamond',serif;font-size:42px;color:#f5ede3;line-height:1;letter-spacing:-1px}
+.brand-sub{font-size:13px;color:#d4b896;font-weight:300;margin-top:8px;letter-spacing:.5px}
+.onboard-body{padding:28px 24px;flex:1}
+.onboard-mission{font-family:'Cormorant Garamond',serif;font-size:22px;color:#2d2419;line-height:1.4;margin-bottom:24px;font-style:italic}
+.style-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.chip{padding:8px 16px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;border:1.5px solid}
+.chip-active{background:#2d2419;color:#f5ede3;border-color:#2d2419}
+.chip-inactive{background:transparent;color:#2d2419;border-color:#d4c4b0}
+.btn-primary{width:100%;padding:16px;background:#2d2419;color:#f5ede3;border:none;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;letter-spacing:.3px;transition:opacity .2s}
+.btn-primary:hover{opacity:.9}
+.btn-ghost{width:100%;padding:14px;background:transparent;color:#8a7060;border:none;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;margin-top:8px}
+.feed-header{padding:20px 20px 12px;display:flex;justify-content:space-between;align-items:center}
+.greeting{font-family:'Cormorant Garamond',serif;font-size:26px;color:#2d2419;font-style:italic}
+.avatar-sm{width:38px;height:38px;border-radius:50%;background:#f0e6d8;border:2px solid #d4b896;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#8a6040;cursor:pointer}
+.section-title{font-size:13px;font-weight:500;color:#8a7060;letter-spacing:.8px;text-transform:uppercase;padding:0 20px;margin-bottom:12px}
+.stories-row{display:flex;gap:12px;padding:0 20px 20px;overflow-x:auto}
+.stories-row::-webkit-scrollbar{display:none}
+.story-item{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
+.story-ring{width:60px;height:60px;border-radius:50%;padding:2px;background:linear-gradient(135deg,#c17b4e,#e8a87c)}
+.story-inner{width:100%;height:100%;border-radius:50%;background:#f0e6d8;border:2px solid #fff;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:18px}
+.story-name{font-size:10px;color:#8a7060;font-weight:400;text-align:center;max-width:60px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cards-scroll{display:flex;gap:12px;padding:0 20px 20px;overflow-x:auto}
+.cards-scroll::-webkit-scrollbar{display:none}
+.item-card-sm{flex-shrink:0;width:150px;border-radius:18px;overflow:hidden;background:#faf7f3;cursor:pointer;border:1px solid #ede5d8}
+.item-card-placeholder{width:100%;height:160px;display:flex;align-items:center;justify-content:center;font-size:36px}
+.item-card-info{padding:10px}
+.item-card-tag{font-size:10px;font-weight:500;color:#c17b4e;letter-spacing:.5px;text-transform:uppercase}
+.item-card-title{font-size:13px;color:#2d2419;font-weight:500;margin-top:2px}
+.item-card-sub{font-size:11px;color:#b8a898;margin-top:1px}
+.status-pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:500;letter-spacing:.3px}
+.pill-give{background:#e8f4e8;color:#3a7a3a}
+.pill-lend{background:#e8f0fa;color:#2a5298}
+.pill-swap{background:#fef0e0;color:#c17b4e}
+.pill-keep{background:#f0ebe3;color:#8a7060}
+.highlight-card{margin:0 20px 20px;border-radius:20px;background:linear-gradient(135deg,#2d2419,#4a3728);padding:20px;color:#f5ede3;cursor:pointer}
+.highlight-eyebrow{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#d4b896;margin-bottom:8px}
+.highlight-title{font-family:'Cormorant Garamond',serif;font-size:22px;line-height:1.3;margin-bottom:12px}
+.highlight-stats{display:flex;gap:16px;margin-top:16px}
+.hstat{text-align:center}
+.hstat-num{font-size:22px;font-weight:600;font-family:'Cormorant Garamond',serif}
+.hstat-label{font-size:10px;color:#d4b896;letter-spacing:.3px}
+.wardrobe-header{padding:20px 20px 0}
+.wh-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:30px;color:#2d2419;font-style:italic}
+.add-btn{width:36px;height:36px;background:#2d2419;border-radius:50%;border:none;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.filter-row{display:flex;gap:8px;padding:0 20px 16px;overflow-x:auto}
+.filter-row::-webkit-scrollbar{display:none}
+.filter-chip{flex-shrink:0;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1.5px solid;transition:all .2s}
+.filter-active{background:#2d2419;color:#f5ede3;border-color:#2d2419}
+.filter-inactive{background:transparent;color:#2d2419;border-color:#d4c4b0}
+.wardrobe-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 20px}
+.wcard{border-radius:18px;overflow:hidden;background:#faf7f3;cursor:pointer;border:1px solid #ede5d8;transition:transform .15s}
+.wcard:active{transform:scale(.97)}
+.wcard-img{width:100%;height:170px;display:flex;align-items:center;justify-content:center;font-size:44px;position:relative}
+.wcard-badge{position:absolute;top:8px;right:8px}
+.wcard-info{padding:10px}
+.wcard-brand{font-size:10px;color:#b8a898;font-weight:400;text-transform:uppercase;letter-spacing:.5px}
+.wcard-name{font-size:13px;color:#2d2419;font-weight:500;margin-top:1px}
+.detail-img{width:100%;height:300px;background:#f0e6d8;display:flex;align-items:center;justify-content:center;font-size:80px;position:relative}
+.back-btn{position:absolute;top:16px;left:16px;width:36px;height:36px;background:rgba(255,255,255,.85);border-radius:50%;border:none;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center}
+.detail-body{padding:24px 20px}
+.detail-brand{font-size:12px;color:#b8a898;text-transform:uppercase;letter-spacing:.8px}
+.detail-title{font-family:'Cormorant Garamond',serif;font-size:28px;color:#2d2419;margin-top:4px}
+.detail-meta{display:flex;gap:16px;margin:16px 0;flex-wrap:wrap}
+.meta-item{display:flex;flex-direction:column;gap:2px}
+.meta-label{font-size:10px;color:#b8a898;text-transform:uppercase;letter-spacing:.5px}
+.meta-value{font-size:14px;color:#2d2419;font-weight:500}
+.detail-note{background:#faf7f3;border-radius:12px;padding:14px;margin:16px 0;font-size:13px;color:#6a5a50;font-style:italic;line-height:1.6;border-left:2px solid #d4b896}
+.toggle-row{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-top:1px solid #f0ebe3}
+.toggle-label{font-size:14px;font-weight:500;color:#2d2419}
+.toggle-sub{font-size:12px;color:#b8a898;margin-top:2px}
+.toggle-switch{width:48px;height:28px;border-radius:14px;cursor:pointer;border:none;position:relative;transition:background .2s;flex-shrink:0}
+.toggle-on{background:#2d2419}
+.toggle-off{background:#d4c4b0}
+.toggle-knob{position:absolute;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:left .2s}
+.action-row{display:flex;gap:10px;margin-top:20px}
+.btn-outline{flex:1;padding:14px 8px;background:transparent;border:1.5px solid #2d2419;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:#2d2419;cursor:pointer}
+.btn-filled{flex:1;padding:14px 8px;background:#2d2419;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:#f5ede3;cursor:pointer}
+.outfit-header{padding:20px 20px 12px}
+.outfit-canvas{margin:0 20px;background:#faf7f3;border-radius:20px;padding:20px;min-height:280px;border:1.5px dashed #d4b896;display:flex;flex-direction:column;gap:12px}
+.outfit-slot{flex:1;background:#f0e6d8;border-radius:14px;height:100px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;transition:transform .15s}
+.outfit-slot:active{transform:scale(.96)}
+.outfit-slot-empty{border:1.5px dashed #c9b59e;font-size:24px;opacity:.6}
+.outfit-slot-label{position:absolute;bottom:6px;left:8px;font-size:10px;color:#8a7060;font-weight:500}
+.slot-emoji{font-size:36px}
+.outfit-controls{padding:16px 20px}
+.outfit-section-title{font-size:13px;font-weight:500;color:#8a7060;letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px}
+.outfit-wardrobe-scroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+.outfit-wardrobe-scroll::-webkit-scrollbar{display:none}
+.outfit-piece{flex-shrink:0;width:68px;height:68px;border-radius:14px;background:#f0e6d8;display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;border:2px solid transparent;transition:all .2s}
+.occasion-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.outfit-save-area{padding:0 20px 20px}
+.friends-header{padding:20px 20px 12px}
+.friend-list{padding:0 20px;display:flex;flex-direction:column;gap:1px}
+.friend-item{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid #f5f0ea;cursor:pointer}
+.friend-avatar{width:48px;height:48px;border-radius:50%;background:#f0e6d8;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;color:#8a6040;flex-shrink:0;position:relative}
+.friend-badge{position:absolute;bottom:-1px;right:-1px;width:18px;height:18px;background:#c17b4e;border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:600}
+.friend-name{font-size:15px;font-weight:500;color:#2d2419}
+.friend-sub{font-size:12px;color:#b8a898;margin-top:2px}
+.friend-arrow{color:#c9b59e;font-size:16px;margin-left:auto}
+.browse-title{padding:20px 20px 12px;font-family:'Cormorant Garamond',serif;font-size:22px;color:#2d2419;font-style:italic}
+.community-cards{display:flex;gap:12px;padding:0 20px 20px;overflow-x:auto}
+.community-cards::-webkit-scrollbar{display:none}
+.community-card{flex-shrink:0;width:160px;border-radius:18px;background:#faf7f3;border:1px solid #ede5d8;overflow:hidden;cursor:pointer}
+.cc-img{height:160px;background:#f0e6d8;display:flex;align-items:center;justify-content:center;font-size:42px}
+.cc-owner{display:flex;align-items:center;gap:6px;padding:10px 10px 4px}
+.cc-avatar{width:20px;height:20px;border-radius:50%;background:#d4b896;font-size:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600}
+.cc-name{font-size:11px;color:#8a7060}
+.cc-item{padding:0 10px 10px;font-size:13px;color:#2d2419;font-weight:500}
+.exchange-list{padding:0 20px;display:flex;flex-direction:column;gap:12px}
+.exchange-card{background:#faf7f3;border-radius:18px;padding:16px;border:1px solid #ede5d8}
+.ex-header{display:flex;align-items:flex-start;gap:12px}
+.ex-emoji{width:56px;height:56px;background:#f0e6d8;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.ex-info{flex:1}
+.ex-title{font-size:15px;font-weight:500;color:#2d2419}
+.ex-sub{font-size:12px;color:#8a7060;margin-top:3px}
+.ex-status{margin-top:12px;display:flex;align-items:center;justify-content:space-between}
+.status-tag{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:500}
+.st-requested{background:#fef0e0;color:#c17b4e}
+.st-reserved{background:#e8f0fa;color:#2a5298}
+.st-collected{background:#f0e8f8;color:#7a3d9a}
+.st-completed{background:#e8f4e8;color:#3a7a3a}
+.ex-date{font-size:11px;color:#b8a898}
+.profile-header{background:linear-gradient(160deg,#2d2419,#4a3728);padding:32px 20px 24px}
+.profile-top{display:flex;gap:16px;align-items:flex-start;margin-bottom:20px}
+.profile-avatar{width:72px;height:72px;border-radius:50%;background:#c17b4e;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:600;color:#fff;border:3px solid rgba(255,255,255,.3);flex-shrink:0}
+.profile-name{font-family:'Cormorant Garamond',serif;font-size:26px;color:#f5ede3;line-height:1.1}
+.profile-handle{font-size:13px;color:#d4b896;margin-top:3px}
+.profile-bio{font-size:13px;color:#c9b59e;margin-top:6px;line-height:1.5}
+.profile-stats{display:flex;gap:0;background:rgba(255,255,255,.08);border-radius:16px;overflow:hidden}
+.pstat{flex:1;padding:14px 8px;text-align:center;border-right:1px solid rgba(255,255,255,.1)}
+.pstat:last-child{border-right:none}
+.pstat-num{font-family:'Cormorant Garamond',serif;font-size:24px;color:#f5ede3;font-weight:500}
+.pstat-label{font-size:10px;color:#d4b896;letter-spacing:.3px;margin-top:2px}
+.profile-body{padding:20px}
+.badges-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.badge-item{display:flex;align-items:center;gap:14px;background:#faf7f3;border-radius:14px;padding:14px;border:1px solid #ede5d8}
+.badge-icon{width:44px;height:44px;background:linear-gradient(135deg,#c17b4e,#e8a87c);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.badge-name{font-size:14px;font-weight:500;color:#2d2419}
+.badge-desc{font-size:12px;color:#8a7060;margin-top:2px}
+.aesthetics-row{display:flex;flex-wrap:wrap;gap:8px}
+.aesthetic-tag{padding:7px 14px;background:#f0ebe3;border-radius:20px;font-size:12px;color:#6a5a50;font-weight:500}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;z-index:100}
+.modal-sheet{background:#fff;border-radius:24px 24px 0 0;padding:28px 24px 40px;width:100%}
+.modal-handle{width:36px;height:4px;background:#d4c4b0;border-radius:2px;margin:0 auto 20px}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:24px;color:#2d2419;margin-bottom:6px}
+.modal-sub{font-size:13px;color:#8a7060;margin-bottom:20px;line-height:1.5}
+.request-item-preview{display:flex;align-items:center;gap:14px;background:#faf7f3;border-radius:14px;padding:14px;margin-bottom:20px;border:1px solid #ede5d8}
+.ri-emoji{width:52px;height:52px;background:#f0e6d8;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.message-input{width:100%;padding:14px;border:1.5px solid #d4c4b0;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;color:#2d2419;background:#faf7f3;resize:none;outline:none;margin-bottom:16px}
+.message-input:focus{border-color:#2d2419}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState} = React;
+const WARDROBE = [
+  {id:1,emoji:'👗',brand:'Zimmermann',name:'Linen Midi Dress',category:'Dresses',size:'XS',color:'Sage',season:'Summer',condition:'Excellent',status:'give',note:'Wore this to a coastal wedding — absolute dream. Best for petites.',bg:'#f0e8f0'},
+  {id:2,emoji:'👚',brand:'COS',name:'Oversized Cotton Tee',category:'Tops',size:'S',color:'Cream',season:'All',condition:'Good',status:'keep',note:'',bg:'#f0e6d8'},
+  {id:3,emoji:'🧥',brand:'& Other Stories',name:'Camel Trench Coat',category:'Jackets',size:'S',color:'Camel',season:'Autumn',condition:'Excellent',status:'lend',note:'Investment piece. Gets so many compliments.',bg:'#f0ede8'},
+  {id:4,emoji:'👖',brand:'Agolde',name:'90s Crop Jeans',category:'Bottoms',size:'26',color:'Mid Wash',season:'All',condition:'Good',status:'swap',note:'',bg:'#e8eef0'},
+  {id:5,emoji:'👡',brand:'Reformation',name:'Heeled Mules',category:'Shoes',size:'37',color:'Nude',season:'Spring',condition:'Excellent',status:'keep',note:'',bg:'#e8f0e8'},
+  {id:6,emoji:'👜',brand:'Staud',name:'Mini Bucket Bag',category:'Bags',size:'One Size',color:'Tan',season:'All',condition:'Very Good',status:'give',note:'',bg:'#f8ece0'},
+  {id:7,emoji:'🩱',brand:'Eres',name:'One Shoulder Swimsuit',category:'Tops',size:'S',color:'Black',season:'Summer',condition:'Excellent',status:'keep',note:'',bg:'#f0e6d8'},
+  {id:8,emoji:'🧣',brand:'Arket',name:'Merino Knit Scarf',category:'Tops',size:'One Size',color:'Oatmeal',season:'Winter',condition:'Good',status:'lend',note:'',bg:'#f5f0e8'},
+];
+const FRIENDS = [
+  {id:1,name:'Sophie Laurent',handle:'@sophiel',emoji:'🌸',initials:'SL',items:4,aesthetic:'minimal, feminine'},
+  {id:2,name:'Ines Park',handle:'@inespark',emoji:'🌿',initials:'IP',items:2,aesthetic:'workwear, clean'},
+  {id:3,name:'Mia Chen',handle:'@miachen',emoji:'✨',initials:'MC',items:6,aesthetic:'edgy, streetwear'},
+  {id:4,name:'Priya Nair',handle:'@priyan',emoji:'🌺',initials:'PN',items:3,aesthetic:'soft, romantic'},
+];
+const COMMUNITY_ITEMS = [
+  {id:1,emoji:'👗',owner:'SL',ownerName:'Sophie',item:'Silk Slip Dress',brand:'Vince',status:'give',bg:'#f0e8f0'},
+  {id:2,emoji:'🧥',owner:'IP',ownerName:'Ines',item:'Blazer',brand:'Sandro',status:'lend',bg:'#f0ede8'},
+  {id:3,emoji:'👜',owner:'MC',ownerName:'Mia',item:'Chain Bag',brand:'Mango',status:'swap',bg:'#f8ece0'},
+  {id:4,emoji:'🩴',owner:'PN',ownerName:'Priya',item:'Sandals',brand:'Birkenstock',status:'give',bg:'#e8f0e8'},
+];
+const EXCHANGES = [
+  {id:1,emoji:'👗',item:'Linen Midi Dress',from:'Sophie Laurent',type:'Give',status:'reserved',date:'Apr 7'},
+  {id:2,emoji:'🧥',item:'Camel Trench',from:'You → Ines Park',type:'Lend',status:'collected',date:'Apr 3'},
+  {id:3,emoji:'👜',item:'Mini Bucket Bag',from:'Mia Chen',type:'Give',status:'requested',date:'Apr 8'},
+  {id:4,emoji:'👖',item:'90s Crop Jeans',from:'You → Priya',type:'Swap',status:'completed',date:'Mar 28'},
+];
+const statusMap = {give:{label:'Give Away',class:'pill-give'},lend:{label:'Lend',class:'pill-lend'},swap:{label:'Swap',class:'pill-swap'},keep:{label:'Keep',class:'pill-keep'}};
+const exStatusMap = {requested:{label:'Requested',class:'st-requested'},reserved:{label:'Reserved',class:'st-reserved'},collected:{label:'Collected',class:'st-collected'},completed:{label:'Completed',class:'st-completed'}};
+function StatusPill({status}){const s=statusMap[status]||statusMap.keep;return <span className={`status-pill ${s.class}`}>{s.label}</span>;}
+function NavBar({active,setActive}){
+  const items=[
+    {key:'home',icon:<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>,label:'Home'},
+    {key:'wardrobe',icon:<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.86H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.86l.58-3.57a2 2 0 0 0-1.34-2.23z"/></svg>,label:'Wardrobe'},
+    {key:'outfit',icon:<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>,label:'Style'},
+    {key:'friends',icon:<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,label:'Community'},
+    {key:'profile',icon:<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,label:'Profile'},
+  ];
+  return <div className="nav-bar">{items.map(i=><div key={i.key} className={`nav-item ${active===i.key?'nav-active':'nav-inactive'}`} onClick={()=>setActive(i.key)}><div className="nav-icon">{i.icon}</div><span className="nav-label">{i.label}</span></div>)}</div>;
+}
+const SIZE_CHART=[
+  {size:'XS', bust:[32,34], waist:[24,25], hips:[33,35]},
+  {size:'S',  bust:[35,36], waist:[26,27], hips:[35,37]},
+  {size:'M',  bust:[37,38], waist:[28,30], hips:[37,39]},
+  {size:'L',  bust:[39,41], waist:[30,32], hips:[39,41]},
+  {size:'XL', bust:[42,44], waist:[33,35], hips:[42,44]},
+  {size:'2XL',bust:[45,47], waist:[36,38], hips:[45,47]},
+  {size:'3XL',bust:[48,51], waist:[39,42], hips:[48,51]},
+];
+function getSizeFromMeasurements(bust,waist,hips){
+  const b=parseFloat(bust),w=parseFloat(waist),h=parseFloat(hips);
+  if(isNaN(b)&&isNaN(w)&&isNaN(h))return null;
+  let best=null,bestScore=Infinity;
+  for(const s of SIZE_CHART){
+    let score=0,count=0;
+    if(!isNaN(b)){const mid=(s.bust[0]+s.bust[1])/2;score+=Math.abs(b-mid);count++;}
+    if(!isNaN(w)){const mid=(s.waist[0]+s.waist[1])/2;score+=Math.abs(w-mid);count++;}
+    if(!isNaN(h)){const mid=(s.hips[0]+s.hips[1])/2;score+=Math.abs(h-mid);count++;}
+    if(count>0&&score/count<bestScore){bestScore=score/count;best=s.size;}
+  }
+  return best;
+}
+function OnboardingScreen({onDone}){
+  const [step,setStep]=useState(0);
+  const [selected,setSelected]=useState([]);
+  const [form,setForm]=useState({name:'',username:'',email:''});
+  const [emailSent,setEmailSent]=useState(false);
+  const [knowsSize,setKnowsSize]=useState(null);
+  const [chosenSize,setChosenSize]=useState('');
+  const [measurements,setMeasurements]=useState({bust:'',waist:'',hips:''});
+  const [suggestedSize,setSuggestedSize]=useState(null);
+  const [confirmed,setConfirmed]=useState(false);
+  const styles=['Minimal','Feminine','Soft','Workwear','Edgy','Coastal','Vintage','Athleisure'];
+  const sizes=['XS','S','M','L','XL','2XL','3XL'];
+  const toggle=(s)=>setSelected(p=>p.includes(s)?p.filter(x=>x!==s):[...p,s]);
+  const calcSize=()=>{const s=getSizeFromMeasurements(measurements.bust,measurements.waist,measurements.hips);setSuggestedSize(s);setChosenSize(s||'');};
+  const inp={width:'100%',padding:'12px 14px',border:'1.5px solid #d4c4b0',borderRadius:12,fontFamily:'DM Sans,sans-serif',fontSize:14,color:'#2d2419',background:'#faf7f3',outline:'none'};
+
+  if(step===0) return <div className="screen">
+    <div className="onboard-hero"><div className="brand-name">lagi</div><div className="brand-sub">wear more, waste less</div></div>
+    <div className="onboard-body">
+      <div className="onboard-mission">"Style what you own. Share what you don't."</div>
+      <p style={{fontSize:14,color:'#6a5a50',lineHeight:1.7,marginBottom:28}}>Lagi is a giving-first wardrobe community. Digitise your closet, create beautiful outfits, and pass pieces on to friends who will love them as much as you did.</p>
+      <button className="btn-primary" onClick={()=>setStep(1)}>Get Started</button>
+      <button className="btn-ghost">I already have an account</button>
+    </div>
+  </div>;
+
+  if(step===1) return <div className="screen">
+    <div style={{padding:'48px 24px 20px',flex:1}}>
+      <div style={{fontSize:12,color:'#b8a898',letterSpacing:'.5px',textTransform:'uppercase',marginBottom:8}}>Step 1 of 3</div>
+      <div className="onboard-mission" style={{fontStyle:'normal',fontSize:26}}>What's your style?</div>
+      <p style={{fontSize:13,color:'#8a7060',marginTop:8,marginBottom:28,lineHeight:1.6}}>Pick all that speak to you.</p>
+      <div className="style-chips">{styles.map(s=><div key={s} className={`chip ${selected.includes(s)?'chip-active':'chip-inactive'}`} onClick={()=>toggle(s)}>{s}</div>)}</div>
+    </div>
+    <div style={{padding:'0 24px',paddingBottom:40}}>
+      <button className="btn-primary" onClick={()=>setStep(2)}>Continue</button>
+      <button className="btn-ghost" onClick={()=>setStep(2)}>Skip for now</button>
+    </div>
+  </div>;
+
+  if(step===2) return <div className="screen">
+    <div style={{padding:'48px 24px 20px',flex:1}}>
+      <div style={{fontSize:12,color:'#b8a898',letterSpacing:'.5px',textTransform:'uppercase',marginBottom:8}}>Step 2 of 3</div>
+      <div className="onboard-mission" style={{fontStyle:'normal',fontSize:26}}>Create your profile</div>
+      <div style={{display:'flex',flexDirection:'column',gap:14,marginTop:24}}>
+        <div><div style={{fontSize:12,color:'#8a7060',marginBottom:4,fontWeight:500}}>Name</div><input placeholder="e.g. Ana" value={form.name} onChange={e=>setForm(p=>({...p,name:e.target.value}))} style={inp}/></div>
+        <div><div style={{fontSize:12,color:'#8a7060',marginBottom:4,fontWeight:500}}>Username</div><input placeholder="@yourname" value={form.username} onChange={e=>setForm(p=>({...p,username:e.target.value}))} style={inp}/></div>
+        <div>
+          <div style={{fontSize:12,color:'#8a7060',marginBottom:4,fontWeight:500}}>Email</div>
+          <div style={{display:'flex',gap:8}}>
+            <input placeholder="your@email.com" value={form.email} onChange={e=>setForm(p=>({...p,email:e.target.value}))} style={{...inp,flex:1}}/>
+            <button onClick={()=>setEmailSent(true)} style={{padding:'12px 14px',background:emailSent?'#e8f4e8':'#2d2419',color:emailSent?'#3a7a3a':'#f5ede3',border:'none',borderRadius:12,fontFamily:'DM Sans,sans-serif',fontSize:13,fontWeight:500,cursor:'pointer',whiteSpace:'nowrap'}}>{emailSent?'✓ Sent':'Verify'}</button>
+          </div>
+          {emailSent&&<div style={{fontSize:12,color:'#3a7a3a',marginTop:6}}>✓ Verification email sent to {form.email||'your inbox'}</div>}
+        </div>
+      </div>
+    </div>
+    <div style={{padding:'20px 24px 40px'}}>
+      <button className="btn-primary" onClick={()=>setStep(3)} disabled={!form.name||!form.email} style={{opacity:form.name&&form.email?1:.4}}>Continue</button>
+      <button className="btn-ghost" onClick={()=>setStep(3)}>Skip for now</button>
+    </div>
+  </div>;
+
+  return <div className="screen">
+    <div style={{padding:'48px 24px 20px',flex:1}}>
+      <div style={{fontSize:12,color:'#b8a898',letterSpacing:'.5px',textTransform:'uppercase',marginBottom:8}}>Step 3 of 3</div>
+      <div className="onboard-mission" style={{fontStyle:'normal',fontSize:26}}>Do you know your size?</div>
+      <p style={{fontSize:13,color:'#8a7060',marginTop:8,marginBottom:24,lineHeight:1.6}}>This helps friends know if your pieces will fit them.</p>
+      {knowsSize===null&&<div style={{display:'flex',gap:12}}>
+        <button onClick={()=>setKnowsSize(true)} style={{flex:1,padding:'16px',background:'#2d2419',color:'#f5ede3',border:'none',borderRadius:14,fontFamily:'DM Sans,sans-serif',fontSize:15,fontWeight:500,cursor:'pointer'}}>Yes, I do</button>
+        <button onClick={()=>setKnowsSize(false)} style={{flex:1,padding:'16px',background:'transparent',color:'#2d2419',border:'1.5px solid #2d2419',borderRadius:14,fontFamily:'DM Sans,sans-serif',fontSize:15,fontWeight:500,cursor:'pointer'}}>Not sure</button>
+      </div>}
+      {knowsSize===true&&<div>
+        <div style={{fontSize:13,color:'#8a7060',marginBottom:12}}>Select your size</div>
+        <div style={{display:'flex',flexWrap:'wrap',gap:10}}>
+          {sizes.map(s=><div key={s} onClick={()=>setChosenSize(s)} style={{padding:'12px 20px',borderRadius:12,border:`1.5px solid ${chosenSize===s?'#2d2419':'#d4c4b0'}`,background:chosenSize===s?'#2d2419':'transparent',color:chosenSize===s?'#f5ede3':'#2d2419',fontWeight:500,fontSize:14,cursor:'pointer'}}>{s}</div>)}
+        </div>
+        <button className="btn-ghost" style={{marginTop:12,textAlign:'left',width:'auto',padding:0,fontSize:12}} onClick={()=>setKnowsSize(null)}>← Go back</button>
+      </div>}
+      {knowsSize===false&&<div>
+        <p style={{fontSize:13,color:'#8a7060',marginBottom:16,lineHeight:1.6}}>Enter your measurements in inches and we'll suggest your size.</p>
+        <div style={{display:'flex',flexDirection:'column',gap:12}}>
+          {[['Bust (inches)','e.g. 36','bust'],['Waist (inches)','e.g. 28','waist'],['Hips (inches)','e.g. 38','hips']].map(([l,p,k])=>(
+            <div key={k}><div style={{fontSize:12,color:'#8a7060',marginBottom:4,fontWeight:500}}>{l}</div><input type="number" placeholder={p} value={measurements[k]} onChange={e=>setMeasurements(m=>({...m,[k]:e.target.value}))} style={inp}/></div>
+          ))}
+        </div>
+        <button onClick={()=>{calcSize();setConfirmed(false);}} style={{marginTop:16,padding:'12px 20px',background:'#f0ebe3',color:'#2d2419',border:'none',borderRadius:12,fontFamily:'DM Sans,sans-serif',fontSize:13,fontWeight:500,cursor:'pointer'}}>Calculate my size</button>
+        {suggestedSize&&!confirmed&&<div style={{marginTop:16,background:'#faf7f3',borderRadius:14,padding:16,border:'1px solid #ede5d8'}}>
+          <div style={{fontSize:12,color:'#8a7060',marginBottom:4}}>Based on your measurements</div>
+          <div style={{fontSize:24,fontWeight:600,color:'#2d2419',fontFamily:'Cormorant Garamond,serif',marginBottom:12}}>Your size is {suggestedSize}</div>
+          <div style={{display:'flex',gap:10}}>
+            <button onClick={()=>{setChosenSize(suggestedSize);setConfirmed(true);}} style={{flex:1,padding:'12px',background:'#2d2419',color:'#f5ede3',border:'none',borderRadius:12,fontFamily:'DM Sans,sans-serif',fontSize:13,fontWeight:500,cursor:'pointer'}}>Confirm {suggestedSize}</button>
+            <button onClick={()=>setKnowsSize(true)} style={{padding:'12px 16px',background:'transparent',color:'#8a7060',border:'1.5px solid #d4c4b0',borderRadius:12,fontFamily:'DM Sans,sans-serif',fontSize:13,cursor:'pointer'}}>Change</button>
+          </div>
+        </div>}
+        {confirmed&&<div style={{marginTop:12,fontSize:13,color:'#3a7a3a'}}>✓ Size {chosenSize} confirmed</div>}
+        <button className="btn-ghost" style={{marginTop:8,textAlign:'left',width:'auto',padding:0,fontSize:12}} onClick={()=>setKnowsSize(null)}>← Go back</button>
+      </div>}
+    </div>
+    <div style={{padding:'20px 24px 40px'}}>
+      <button className="btn-primary" onClick={onDone}>Enter Lagi ✦</button>
+      <button className="btn-ghost" onClick={onDone}>Skip for now</button>
+    </div>
+  </div>;
+}
+function HomeFeed({setTab,setSelectedItem}){
+  return <div className="screen">
+    <div className="feed-header"><div><div className="greeting">Good morning, Ana ✦</div><div style={{fontSize:13,color:'#b8a898',marginTop:2}}>3 items available from friends</div></div><div className="avatar-sm">A</div></div>
+    <div className="section-title">Friends' Circle</div>
+    <div className="stories-row">{FRIENDS.map(f=><div className="story-item" key={f.id} onClick={()=>setTab('friends')}><div className="story-ring"><div className="story-inner">{f.emoji}</div></div><span className="story-name">{f.name.split(' ')[0]}</span></div>)}<div className="story-item"><div style={{width:60,height:60,borderRadius:'50%',background:'#f0ebe3',border:'1.5px dashed #d4b896',display:'flex',alignItems:'center',justifyContent:'center',fontSize:22,color:'#c9b59e',cursor:'pointer'}} onClick={()=>setTab('friends')}>+</div><span className="story-name">Add</span></div></div>
+    <div className="section-title">Available from Friends</div>
+    <div className="cards-scroll">{COMMUNITY_ITEMS.slice(0,3).map(item=><div className="item-card-sm" key={item.id} onClick={()=>setSelectedItem({...item,fromFriend:true})}><div className="item-card-placeholder" style={{background:item.bg}}>{item.emoji}</div><div className="item-card-info"><div className="item-card-tag">{item.ownerName}</div><div className="item-card-title">{item.item}</div><div style={{marginTop:6}}><StatusPill status={item.status}/></div></div></div>)}</div>
+    <div className="highlight-card" onClick={()=>setTab('wardrobe')}><div className="highlight-eyebrow">✦ Style insight</div><div className="highlight-title">3 pieces haven't been worn in 60+ days. Time to refresh?</div><div style={{fontSize:12,color:'#d4b896'}}>Tap to review your wardrobe →</div><div className="highlight-stats"><div className="hstat"><div className="hstat-num">24</div><div className="hstat-label">Items owned</div></div><div className="hstat"><div className="hstat-num">8</div><div className="hstat-label">Shared</div></div><div className="hstat"><div className="hstat-num">5</div><div className="hstat-label">Re-loved</div></div></div></div>
+    <div className="section-title">Style from your Closet</div>
+    <div className="cards-scroll">{WARDROBE.filter(w=>w.status==='keep').slice(0,4).map(item=><div className="item-card-sm" key={item.id} onClick={()=>setSelectedItem(item)}><div className="item-card-placeholder" style={{background:item.bg}}>{item.emoji}</div><div className="item-card-info"><div className="item-card-tag">{item.brand}</div><div className="item-card-title">{item.name}</div><div className="item-card-sub">{item.category}</div></div></div>)}</div>
+    <div style={{height:20}}/>
+  </div>;
+}
+function WardrobeScreen({setSelectedItem}){
+  const [filter,setFilter]=useState('All');
+  const [statusFilter,setStatusFilter]=useState('All');
+  const cats=['All','Tops','Dresses','Bottoms','Jackets','Shoes','Bags'];
+  const statuses=['All','Keep','Lend','Swap','Give Away'];
+  const filtered=WARDROBE.filter(w=>{
+    if(filter!=='All'&&w.category!==filter)return false;
+    if(statusFilter!=='All'&&statusMap[w.status]?.label.toLowerCase()!==statusFilter.toLowerCase())return false;
+    return true;
+  });
+  return <div className="screen">
+    <div className="wardrobe-header"><div className="wh-top"><div><div className="page-title">My Wardrobe</div><div style={{fontSize:13,color:'#b8a898',marginTop:2}}>{WARDROBE.length} pieces · 4 available</div></div><button className="add-btn">+</button></div></div>
+    <div className="filter-row">{cats.map(c=><div key={c} className={`filter-chip ${filter===c?'filter-active':'filter-inactive'}`} onClick={()=>setFilter(c)}>{c}</div>)}</div>
+    <div className="filter-row" style={{paddingTop:0}}>{statuses.map(s=><div key={s} className={`filter-chip ${statusFilter===s?'filter-active':'filter-inactive'}`} onClick={()=>setStatusFilter(s)}>{s}</div>)}</div>
+    <div className="wardrobe-grid">{filtered.map(item=><div className="wcard" key={item.id} onClick={()=>setSelectedItem(item)}><div className="wcard-img" style={{background:item.bg}}><span style={{fontSize:44}}>{item.emoji}</span><div className="wcard-badge"><StatusPill status={item.status}/></div></div><div className="wcard-info"><div className="wcard-brand">{item.brand}</div><div className="wcard-name">{item.name}</div></div></div>)}</div>
+  </div>;
+}
+function ItemDetail({item,onBack,openRequest}){
+  const [available,setAvailable]=useState(item.status!=='keep');
+  const [status,setStatus]=useState(item.status);
+  return <div className="screen">
+    <div className="detail-img" style={{background:item.bg||'#f0e6d8'}}><span style={{fontSize:80}}>{item.emoji}</span><button className="back-btn" onClick={onBack}>←</button></div>
+    <div className="detail-body">
+      <div className="detail-brand">{item.brand}</div>
+      <div className="detail-title">{item.name}</div>
+      <div className="detail-meta">{[['Category',item.category||'Tops'],['Size',item.size||'S'],['Colour',item.color||''],['Condition',item.condition||'Good']].map(([l,v])=>v?<div className="meta-item" key={l}><div className="meta-label">{l}</div><div className="meta-value">{v}</div></div>:null)}</div>
+      {item.note&&<div className="detail-note">"{item.note}"</div>}
+      <div className="toggle-row"><div><div className="toggle-label">Available to share</div><div className="toggle-sub">Friends can request this piece</div></div><button className={`toggle-switch ${available?'toggle-on':'toggle-off'}`} onClick={()=>setAvailable(!available)}><div className="toggle-knob" style={{left:available?'23px':'3px'}}/></button></div>
+      {available&&<div style={{marginBottom:16}}><div style={{fontSize:12,color:'#8a7060',marginBottom:8,fontWeight:500}}>How to share</div><div style={{display:'flex',gap:8}}>{['lend','swap','give'].map(s=><div key={s} className={`filter-chip ${status===s?'filter-active':'filter-inactive'}`} onClick={()=>setStatus(s)} style={{fontSize:12,padding:'6px 12px'}}>{statusMap[s].label}</div>)}</div></div>}
+      {item.fromFriend&&<button className="btn-primary" onClick={openRequest} style={{marginBottom:12}}>Request this piece</button>}
+      <div className="action-row"><button className="btn-outline">Edit</button><button className="btn-outline">Style it</button><button className="btn-filled">Share</button></div>
+    </div>
+  </div>;
+}
+function OutfitBuilder(){
+  const [slots,setSlots]=useState({top:null,bottom:null,outer:null,shoes:null});
+  const [occasion,setOccasion]=useState('');
+  const occasions=['Date Night','Work','Weekend','Travel','Event'];
+  const SLOT_EMOJI={top:'👚',bottom:'👖',outer:'🧥',shoes:'👟'};
+  const slotKeys=['top','bottom','outer','shoes'];
+  const [activeSlot,setActiveSlot]=useState('top');
+  const assignPiece=(piece)=>{setSlots(p=>({...p,[activeSlot]:piece}));const next=slotKeys[slotKeys.indexOf(activeSlot)+1];if(next)setActiveSlot(next);};
+  return <div className="screen">
+    <div className="outfit-header"><div className="page-title">Outfit Builder</div><div style={{fontSize:13,color:'#b8a898',marginTop:2}}>Build looks from your closet</div></div>
+    <div className="outfit-canvas">
+      <div style={{display:'flex',gap:10}}>{['top','outer'].map(s=><div key={s} className={`outfit-slot ${slots[s]?'':'outfit-slot-empty'}`} style={{background:slots[s]?slots[s].bg:'',border:activeSlot===s?'2px solid #c17b4e':'',borderRadius:14}} onClick={()=>setActiveSlot(s)}>{slots[s]?<span className="slot-emoji">{slots[s].emoji}</span>:<span className="slot-emoji">{SLOT_EMOJI[s]}</span>}<span className="outfit-slot-label">{slots[s]?slots[s].name.split(' ')[0]:s}</span></div>)}</div>
+      <div style={{display:'flex',gap:10}}>{['bottom','shoes'].map(s=><div key={s} className={`outfit-slot ${slots[s]?'':'outfit-slot-empty'}`} style={{background:slots[s]?slots[s].bg:'',border:activeSlot===s?'2px solid #c17b4e':'',borderRadius:14}} onClick={()=>setActiveSlot(s)}>{slots[s]?<span className="slot-emoji">{slots[s].emoji}</span>:<span className="slot-emoji">{SLOT_EMOJI[s]}</span>}<span className="outfit-slot-label">{slots[s]?slots[s].name.split(' ')[0]:s}</span></div>)}</div>
+      {Object.values(slots).every(Boolean)&&<div style={{textAlign:'center',padding:'8px 0',fontSize:13,color:'#c17b4e',fontWeight:500}}>✦ Outfit complete!</div>}
+    </div>
+    <div className="outfit-controls">
+      <div className="outfit-section-title">Select {activeSlot} piece</div>
+      <div className="outfit-wardrobe-scroll">{WARDROBE.slice(0,6).map(p=><div key={p.id} className="outfit-piece" style={{background:p.bg,border:slots[activeSlot]?.id===p.id?'2px solid #c17b4e':'2px solid transparent'}} onClick={()=>assignPiece(p)}>{p.emoji}</div>)}</div>
+      <div style={{marginTop:20}}><div className="outfit-section-title">Save for occasion</div><div className="occasion-chips">{occasions.map(o=><div key={o} className={`chip ${occasion===o?'chip-active':'chip-inactive'}`} style={{fontSize:12,padding:'6px 14px'}} onClick={()=>setOccasion(o)}>{o}</div>)}</div></div>
+    </div>
+    <div className="outfit-save-area"><button className="btn-primary" onClick={()=>{setSlots({top:null,bottom:null,outer:null,shoes:null});setOccasion('');}}>{Object.values(slots).some(Boolean)?'Save Outfit ✦':'Clear & Start Over'}</button></div>
+  </div>;
+}
+function FriendsScreen({setSelectedItem}){
+  const [view,setView]=useState('friends');
+  return <div className="screen">
+    <div className="friends-header"><div className="page-title">Community</div><div style={{display:'flex',gap:8,marginTop:12}}>{['friends','browse'].map(v=><div key={v} className={`filter-chip ${view===v?'filter-active':'filter-inactive'}`} style={{fontSize:13}} onClick={()=>setView(v)}>{v==='friends'?'Friends':'Browse Available'}</div>)}</div></div>
+    {view==='friends'?<div><div style={{padding:'0 20px',fontSize:13,color:'#b8a898',marginBottom:8}}>Friends get first access to your pieces</div><div className="friend-list">{FRIENDS.map(f=><div className="friend-item" key={f.id}><div className="friend-avatar">{f.initials}{f.items>0&&<div className="friend-badge">{f.items}</div>}</div><div><div className="friend-name">{f.name}</div><div className="friend-sub">{f.aesthetic} · {f.items} available</div></div><div className="friend-arrow">›</div></div>)}</div><div style={{padding:'16px 20px'}}><button className="btn-outline" style={{width:'100%'}}>Invite a Friend</button></div></div>
+    :<div><div className="browse-title">Available Now ✦</div><div className="community-cards">{COMMUNITY_ITEMS.map(item=><div className="community-card" key={item.id} onClick={()=>setSelectedItem({...item,fromFriend:true})}><div className="cc-img" style={{background:item.bg}}>{item.emoji}</div><div className="cc-owner"><div className="cc-avatar">{item.owner}</div><span className="cc-name">{item.ownerName}</span></div><div className="cc-item">{item.item}</div><div style={{padding:'0 10px 10px',display:'flex',justifyContent:'space-between',alignItems:'center'}}><span style={{fontSize:11,color:'#b8a898'}}>{item.brand}</span><StatusPill status={item.status}/></div></div>)}</div><div style={{padding:'12px 20px 0'}}><div className="section-title">Exchange Activity</div></div><div className="exchange-list" style={{paddingBottom:20}}>{EXCHANGES.slice(0,2).map(ex=><div className="exchange-card" key={ex.id}><div className="ex-header"><div className="ex-emoji">{ex.emoji}</div><div className="ex-info"><div className="ex-title">{ex.item}</div><div className="ex-sub">{ex.from} · {ex.type}</div></div></div><div className="ex-status"><span className={`status-tag ${exStatusMap[ex.status].class}`}>{exStatusMap[ex.status].label}</span><span className="ex-date">{ex.date}</span></div></div>)}</div></div>}
+  </div>;
+}
+function ProfileScreen(){
+  const badges=[{icon:'🌱',name:'First Give',desc:'Passed on your first piece'},{icon:'✦',name:'Style Pioneer',desc:'Created 10+ outfits'},{icon:'💛',name:'Generous Heart',desc:'Helped 5 pieces find a new home'}];
+  return <div className="screen">
+    <div className="profile-header"><div className="profile-top"><div className="profile-avatar">A</div><div><div className="profile-name">Ana</div><div className="profile-handle">@anafashion · Singapore</div><div className="profile-bio">Finance by day, style by night. Slow fashion advocate.</div></div></div><div className="profile-stats"><div className="pstat"><div className="pstat-num">24</div><div className="pstat-label">Pieces</div></div><div className="pstat"><div className="pstat-num">8</div><div className="pstat-label">Shared</div></div><div className="pstat"><div className="pstat-num">5</div><div className="pstat-label">Re-loved</div></div><div className="pstat"><div className="pstat-num">12</div><div className="pstat-label">Outfits</div></div></div></div>
+    <div className="profile-body"><div style={{marginBottom:20}}><div className="section-title" style={{padding:0,marginBottom:12}}>My Aesthetics</div><div className="aesthetics-row">{['Minimal','Feminine','Coastal','Workwear'].map(a=><div key={a} className="aesthetic-tag">{a}</div>)}</div></div><div style={{marginBottom:20}}><div className="section-title" style={{padding:0,marginBottom:12}}>Achievements</div><div className="badges-grid">{badges.map(b=><div className="badge-item" key={b.name}><div className="badge-icon">{b.icon}</div><div><div className="badge-name">{b.name}</div><div className="badge-desc">{b.desc}</div></div></div>)}</div></div><div><div className="section-title" style={{padding:0,marginBottom:12}}>Style Mood</div><div style={{background:'#faf7f3',borderRadius:16,padding:16,border:'1px solid #ede5d8'}}><div style={{fontSize:16,color:'#6a5a50',lineHeight:1.6,fontStyle:'italic',fontFamily:'Cormorant Garamond,serif'}}>"I believe fashion should bring joy — and so should sharing it. Lagi is where my wardrobe breathes."</div></div></div><div style={{height:20}}/></div>
+  </div>;
+}
+function RequestModal({item,onClose}){
+  return <div className="modal-overlay" onClick={onClose}><div className="modal-sheet" onClick={e=>e.stopPropagation()}><div className="modal-handle"/><div className="modal-title">Request this piece</div><div className="modal-sub">Your request will go to {item.ownerName||'the owner'} first. They'll have 48 hours to respond.</div><div className="request-item-preview"><div className="ri-emoji">{item.emoji}</div><div><div style={{fontSize:15,fontWeight:500,color:'#2d2419'}}>{item.item||item.name}</div><div style={{fontSize:12,color:'#8a7060',marginTop:2}}>{item.brand} · {item.ownerName||'Friend'}</div><div style={{marginTop:6}}><StatusPill status={item.status}/></div></div></div><textarea className="message-input" rows={3} placeholder="Add a note... (optional)"/><button className="btn-primary" onClick={onClose}>Send Request ✦</button><button className="btn-ghost" onClick={onClose}>Cancel</button></div></div>;
+}
+function Clock(){
+  const [time,setTime]=useState('');
+  React.useEffect(()=>{
+    const fmt=()=>{const n=new Date();let h=n.getHours(),m=n.getMinutes();const ampm=h>=12?'PM':'AM';h=h%12||12;return `${h}:${m.toString().padStart(2,'0')} ${ampm}`;};
+    setTime(fmt());
+    const id=setInterval(()=>setTime(fmt()),10000);
+    return()=>clearInterval(id);
+  },[]);
+  return <span>{time}</span>;
+}
+function App(){
+  const [onboarded,setOnboarded]=useState(false);
+  const [tab,setTab]=useState('home');
+  const [selectedItem,setSelectedItem]=useState(null);
+  const [requestItem,setRequestItem]=useState(null);
+  const bar=<div className="status-bar"><Clock/><span>●●●</span></div>;
+  if(!onboarded) return <div className="phone">{bar}<OnboardingScreen onDone={()=>setOnboarded(true)}/></div>;
+  if(selectedItem) return <div className="phone">{bar}<ItemDetail item={selectedItem} onBack={()=>setSelectedItem(null)} openRequest={()=>setRequestItem(selectedItem)}/>{requestItem&&<RequestModal item={requestItem} onClose={()=>setRequestItem(null)}/>}</div>;
+  return <div className="phone">{bar}{tab==='home'&&<HomeFeed setTab={setTab} setSelectedItem={setSelectedItem}/>}{tab==='wardrobe'&&<WardrobeScreen setSelectedItem={setSelectedItem}/>}{tab==='outfit'&&<OutfitBuilder/>}{tab==='friends'&&<FriendsScreen setSelectedItem={setSelectedItem}/>}{tab==='profile'&&<ProfileScreen/>}<NavBar active={tab} setActive={setTab}/></div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
